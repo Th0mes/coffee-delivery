@@ -1,13 +1,15 @@
 interface TagProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string
   outline?: boolean
+  pointer?: boolean
 }
 
-export const Tag = ({ title, outline }: TagProps) => (
+export const Tag = ({ title, outline, pointer, ...props }: TagProps) => (
   <div
-    className={`rounded-xl ${
-      outline ? 'border border-yellow' : 'bg-yellow-light'
-    } px-3 text-yellow-dark`}
+    className={`rounded-xl border px-3 text-yellow-dark ${
+      outline ? 'border-yellow' : 'border-yellow-light bg-yellow-light'
+    } ${pointer && 'cursor-pointer'}`}
+    {...props}
   >
     {title}
   </div>

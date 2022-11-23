@@ -29,7 +29,7 @@ export const Card = ({
 
     <div className="grid w-full grid-cols-5">
       <p className="col-span-2 text-sm">
-        R$ <span className="text-2xl  font-extrabold">{price}</span>
+        R$ <span className="text-2xl font-extrabold">{price}</span>
       </p>
       <div className="col-span-3 grid grid-cols-3 items-center justify-between gap-2">
         <div className="col-span-2 flex h-full items-center justify-between rounded bg-slate-300">

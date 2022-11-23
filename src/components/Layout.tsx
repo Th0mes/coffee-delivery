@@ -7,7 +7,7 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="mx-auto flex w-full max-w-screen-xl flex-col">
+    <div className={`mx-auto flex w-full max-w-screen-xl flex-col`}>
       <Header />
       {children}
     </div>

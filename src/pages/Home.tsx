@@ -1,9 +1,10 @@
-import { Layout, Tag } from '../components'
+import { Layout, Tag, Card } from '../components'
 
 import { ShoppingCartIcon } from '@heroicons/react/24/solid'
 
 import { Coffee } from '../assets'
-import { Card } from '../components/Card'
+import { useState } from 'react'
+import { useCoffeeStore } from '../hooks/useCoffeeStore'
 
 interface ItemInterface {
   text: string
@@ -45,7 +46,7 @@ const ItemsData: ItemInterface[][] = [
   ],
 ]
 
-const TagsData: string[] = [
+const TagsData: Tag[] = [
   'Tradicional',
   'Especial',
   'Com leite',
@@ -54,6 +55,16 @@ const TagsData: string[] = [
 ]
 
 export const Home = () => {
+  const { filteredTags, addFilteredTags, removeFilteredTags } = useCoffeeStore()
+
+  function handleFilteredTags(tag: Tag) {
+    if (filteredTags.includes(tag)) {
+      removeFilteredTags(tag)
+    } else {
+      addFilteredTags(tag)
+    }
+  }
+
   return (
     <Layout>
       <section className="grid grid-cols-5 items-center py-12">
@@ -85,25 +96,78 @@ export const Home = () => {
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-extrabold">Nossos cafés</h1>
           <div className="flex items-center space-x-4">
-            {TagsData.map((tag) => (
-              <Tag key={tag} title={tag} outline />
+            {TagsData.map((tag: Tag) => (
+              <Tag
+                key={tag}
+                title={tag}
+                pointer
+                outline={!filteredTags.includes(tag)}
+                onClick={() => handleFilteredTags(tag)}
+              />
             ))}
           </div>
         </div>
         <div className="grid w-full grid-cols-4 justify-items-center gap-y-12">
-          {Array.from(Array(5)).map((coffee, id) => (
-            <Card
-              key={id}
-              image={''}
-              tags={['Tradicional']}
-              title={'Expresso Tradicional'}
-              description={
-                'O tradicional café feito com água quente e grãos moídos'
-              }
-              price={'9.90'}
-              quantity={1}
-            />
-          ))}
+          {filteredTags.length > 0 ? (
+            <>
+              {[
+                {
+                  tags: ['Tradicional'],
+                },
+                {
+                  tags: ['Tradicional'],
+                },
+                {
+                  tags: ['Tradicional'],
+                },
+              ]
+                // .filter(({ tags }) =>
+                //   tags.some((x) => x.includes(filteredTags))
+                // )
+                // .filter(({ tags }) =>
+                //   filteredTags.some((x) => x.includes(tags))
+                // )
+                .map((coffee, id) => (
+                  <Card
+                    key={id}
+                    image={''}
+                    tags={coffee.tags}
+                    title={'Expresso Tradicional'}
+                    description={
+                      'O tradicional café feito com água quente e grãos moídos'
+                    }
+                    price={9.9}
+                    quantity={1}
+                  />
+                ))}
+            </>
+          ) : (
+            <>
+              {[
+                {
+                  tags: ['Tradicional'],
+                },
+                {
+                  tags: ['Tradicional'],
+                },
+                {
+                  tags: ['Tradicional'],
+                },
+              ].map((coffee, id) => (
+                <Card
+                  key={id}
+                  image={''}
+                  tags={coffee.tags}
+                  title={'Expresso Tradicional'}
+                  description={
+                    'O tradicional café feito com água quente e grãos moídos'
+                  }
+                  price={9.9}
+                  quantity={1}
+                />
+              ))}
+            </>
+          )}
         </div>
       </section>
     </Layout>
