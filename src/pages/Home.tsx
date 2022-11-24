@@ -65,6 +65,22 @@ export const Home = () => {
     }
   }
 
+  const Coffees: { tags: Tag[] }[] = [
+    {
+      tags: ['Tradicional'],
+    },
+    {
+      tags: ['Tradicional'],
+    },
+    {
+      tags: ['Tradicional'],
+    },
+  ]
+
+  const filteredCoffees = Coffees.filter((coffee) =>
+    coffee.tags.find((tag) => filteredTags.includes(tag))
+  )
+
   return (
     <Layout>
       <section className="grid grid-cols-5 items-center py-12">
@@ -110,36 +126,21 @@ export const Home = () => {
         <div className="grid w-full grid-cols-4 justify-items-center gap-y-12">
           {filteredTags.length > 0 ? (
             <>
-              {[
-                {
-                  tags: ['Tradicional'],
-                },
-                {
-                  tags: ['Tradicional'],
-                },
-                {
-                  tags: ['Tradicional'],
-                },
-              ]
-                // .filter(({ tags }) =>
-                //   tags.some((x) => x.includes(filteredTags))
-                // )
-                // .filter(({ tags }) =>
-                //   filteredTags.some((x) => x.includes(tags))
-                // )
-                .map((coffee, id) => (
-                  <Card
-                    key={id}
-                    image={''}
-                    tags={coffee.tags}
-                    title={'Expresso Tradicional'}
-                    description={
-                      'O tradicional café feito com água quente e grãos moídos'
-                    }
-                    price={9.9}
-                    quantity={1}
-                  />
-                ))}
+              {filteredCoffees.length > 0
+                ? filteredCoffees.map((coffee, id) => (
+                    <Card
+                      key={id}
+                      image={''}
+                      tags={coffee.tags}
+                      title={'Expresso Tradicional'}
+                      description={
+                        'O tradicional café feito com água quente e grãos moídos'
+                      }
+                      price={9.9}
+                      quantity={1}
+                    />
+                  ))
+                : 'No results found'}
             </>
           ) : (
             <>

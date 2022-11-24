@@ -1,43 +1,114 @@
-import { Layout, CartItem } from '../components'
+import { Children, useState } from 'react'
+
+import { Layout, CartItem, Input } from '../components'
 
 import {
   CurrencyDollarIcon,
   CreditCardIcon,
   BuildingLibraryIcon,
   BanknotesIcon,
+  MapPinIcon,
 } from '@heroicons/react/24/outline'
+import { patterns } from '../utils/patterns'
+
+interface PaymentMethodsProps {
+  id: string
+  title: string
+  Icon: (
+    props: React.SVGProps<SVGSVGElement> & {
+      title?: string | undefined
+      titleId?: string | undefined
+    }
+  ) => JSX.Element
+}
+
+const PaymentMethods: PaymentMethodsProps[] = [
+  { id: 'creditCard', title: 'Cartão de crédito', Icon: CreditCardIcon },
+  { id: 'debitCard', title: 'Cartão de débito', Icon: BuildingLibraryIcon },
+  { id: 'money', title: 'Dinheiro', Icon: BanknotesIcon },
+]
+
+const CheckoutCard = ({
+  title,
+  description,
+  Icon,
+  iconColor,
+  children,
+  ...props
+}: {
+  title: string
+  description: string
+  Icon: (
+    props: React.SVGProps<SVGSVGElement> & {
+      title?: string | undefined
+      titleId?: string | undefined
+    }
+  ) => JSX.Element
+  iconColor: string
+  children: React.ReactNode
+} & React.HTMLAttributes<HTMLDivElement>) => (
+  <div className="space-y-8 rounded-md bg-slate-100 p-8">
+    <div className="flex gap-x-2">
+      <Icon className={`h-8 w-8 ${iconColor}`} />
+      <div>
+        <h2 className="text-xl">{title}</h2>
+        <p>{description}</p>
+      </div>
+    </div>
+    <div {...props}>{children}</div>
+  </div>
+)
 
 export const Checkout = () => {
+  const [paymentMethod, setPaymentMethod] = useState<string>('')
+
   return (
     <Layout>
       <div className="grid grid-cols-3 gap-8">
         <section className="col-span-2 space-y-4">
           <h1 className="text-lg font-extrabold">Complete seu pedido</h1>
           <div className="space-y-4">
-            <div className="rounded-md bg-slate-100 p-8"></div>
-            <div className="space-y-8 rounded-md bg-slate-100 p-8">
-              <div className="flex gap-x-2">
-                <CurrencyDollarIcon className="h-8 w-8 text-purple" />
-                <div>
-                  <h2 className="text-xl">Pagamento</h2>
-                  <p>
-                    O pagamento é feito na entrega. Escolha a forma que deseja
-                    pagar
-                  </p>
+            <CheckoutCard
+              title="Endereço de Entrega"
+              description="Informe o endereço onde deseja receber seu pedido"
+              Icon={MapPinIcon}
+              iconColor="text-yellow-dark"
+              className="grid grid-cols-3 grid-rows-4 gap-4 overflow-hidden"
+            >
+              <Input placeholder="CEP" mask={patterns.CEP} />
+              <Input placeholder="Rua" className="col-span-3 row-start-2" />
+              <Input placeholder="Número" className="row-start-3" />
+              <Input
+                placeholder="Complemento"
+                optional
+                className="col-span-2 row-start-3"
+              />
+              <Input placeholder="Bairro" className="row-start-4" />
+              <div className="col-span-2 row-start-4 grid grid-cols-6 gap-4">
+                <Input placeholder="Cidade" className="col-span-4" />
+                <Input placeholder="UF" className="col-span-2" maxLength={2} />
+              </div>
+            </CheckoutCard>
+            <CheckoutCard
+              title="Pagamento"
+              description="O pagamento é feito na entrega. Escolha a forma que deseja
+                    pagar"
+              Icon={CurrencyDollarIcon}
+              iconColor="text-purple"
+              className="flex items-center justify-between space-x-8"
+            >
+              {PaymentMethods.map(({ id, title, Icon }) => (
+                <div
+                  key={id}
+                  className={`flex w-full cursor-pointer items-center rounded-lg bg-gray-200 p-4 uppercase ${
+                    paymentMethod === id && 'scale-105 bg-gray-300'
+                  }`}
+                  onClick={() => setPaymentMethod(id)}
+                >
+                  <Icon className="mr-4 h-6 w-6 text-purple" /> {title}
                 </div>
-              </div>
-              <div className="flex items-center justify-between space-x-8">
-                {[
-                  { Icon: CreditCardIcon, title: 'Cartão de crédito' },
-                  { Icon: BuildingLibraryIcon, title: 'Cartão de débito' },
-                  { Icon: BanknotesIcon, title: 'Dinheiro' },
-                ].map(({ Icon, title }) => (
-                  <div className="flex w-full items-center rounded-lg bg-slate-200 p-4 uppercase">
-                    <Icon className="mr-4 h-6 w-6 text-purple" /> {title}
-                  </div>
-                ))}
-              </div>
-            </div>
+              ))}
+            </CheckoutCard>
           </div>
         </section>
         <section className="space-y-4">
