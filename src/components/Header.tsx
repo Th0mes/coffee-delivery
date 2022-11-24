@@ -16,8 +16,11 @@ export const Header = () => {
           <span className="text-purple-dark">São Paulo, SP</span>
         </div>
         <Link to="/checkout">
-          <div className="rounded-md bg-yellow-light p-2">
+          <div className="relative rounded-md bg-yellow-light p-2">
             <ShoppingCartIcon className="h-6 w-6 text-yellow-dark" />
+            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-dark text-sm text-white">
+              3
+            </span>
           </div>
         </Link>
       </div>

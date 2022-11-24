@@ -100,8 +100,10 @@ export const Checkout = () => {
               {PaymentMethods.map(({ id, title, Icon }) => (
                 <div
                   key={id}
-                  className={`flex w-full cursor-pointer items-center rounded-lg bg-gray-200 p-4 uppercase ${
-                    paymentMethod === id && 'scale-105 bg-gray-300'
+                  className={`flex w-full cursor-pointer items-center rounded-lg p-4 uppercase transition-transform ${
+                    paymentMethod === id
+                      ? 'scale-105 border border-purple bg-purple-light'
+                      : 'bg-slate-200'
                   }`}
                   onClick={() => setPaymentMethod(id)}
                 >

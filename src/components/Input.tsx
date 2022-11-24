@@ -14,36 +14,34 @@ export const Input = ({
   optional,
   className,
   ...props
-}: InputProps) => (
-  <div className={`h-full w-full space-y-2 ${className}`}>
-    {label && (
-      <label className="text-xl text-gray-600">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-    )}
-    <div className="relative flex h-full w-full items-center rounded-md bg-slate-200">
-      {mask ? (
-        <InputMask
-          mask={mask}
-          placeholder={placeholder}
-          className={`h-full w-full bg-transparent p-4 text-xl ${
-            optional && 'overflow-ellipsis pr-20'
-          }`}
-          {...props}
-        />
-      ) : (
-        <input
-          placeholder={placeholder}
-          className={`h-full w-full bg-transparent p-4 text-xl ${
-            optional && 'overflow-ellipsis pr-20'
-          }`}
-          {...props}
-        />
-      )}
+}: InputProps) => {
+  const inputStyles = `h-full w-full rounded-md bg-transparent p-4 text-xl outline-none ring-purple focus:ring-2 focus:ring-inset ${
+    optional && 'overflow-ellipsis pr-20'
+  }`
 
-      {optional && (
-        <p className="absolute right-4 text-sm text-gray-400">Opcional</p>
+  return (
+    <div className={`h-full w-full space-y-2 ${className}`}>
+      {label && (
+        <label className="text-xl text-gray-600">
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
       )}
+      <div className="relative flex h-full w-full items-center rounded-md bg-slate-200">
+        {mask ? (
+          <InputMask
+            mask={mask}
+            placeholder={placeholder}
+            className={inputStyles}
+            {...props}
+          />
+        ) : (
+          <input placeholder={placeholder} className={inputStyles} {...props} />
+        )}
+
+        {optional && (
+          <p className="absolute right-4 text-sm text-gray-400">Opcional</p>
+        )}
+      </div>
     </div>
-  </div>
-)
+  )
+}
