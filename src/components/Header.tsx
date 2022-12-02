@@ -4,7 +4,7 @@ import { Logo } from '../assets'
 
 import { MapPinIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
 
-export const Header = () => {
+export const Header = (props: React.HTMLAttributes<HTMLElement>) => {
   return (
     <header className="flex items-center justify-between py-8">
       <Link to="/">

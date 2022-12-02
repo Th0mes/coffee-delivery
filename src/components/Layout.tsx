@@ -1,15 +1,15 @@
-import React from 'react'
 import { Header } from './'
+import { Outlet } from 'react-router-dom'
 
-interface LayoutProps {
-  children: React.ReactNode
-}
-
-export const Layout = ({ children }: LayoutProps) => {
+export const Layout = () => {
   return (
-    <div className={`mx-auto flex w-full max-w-screen-xl flex-col`}>
-      <Header />
-      {children}
+    <div className={`mx-auto flex h-screen w-screen max-w-screen-xl flex-col`}>
+      <Header className="relative" />
+      <main className="h-full w-full">
+        <Outlet />
+      </main>
+
+      <header></header>
     </div>
   )
 }

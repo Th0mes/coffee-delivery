@@ -11,7 +11,7 @@ export const Card = ({
   image,
   quantity,
 }: Coffee) => (
-  <div className="flex h-80 w-64 flex-col items-center justify-center rounded-tl-md rounded-br-md rounded-tr-3xl rounded-bl-3xl bg-slate-100 p-6">
+  <div className="rounded-box flex h-80 w-64 flex-col items-center justify-center bg-slate-100 p-6">
     <img
       src={image}
       alt={title}

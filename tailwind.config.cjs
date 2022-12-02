@@ -15,6 +15,9 @@ module.exports = {
       colors: theme,
       backgroundColor: theme,
       borderColor: theme,
+      borderRadius: {
+        '4xl': '36px',
+      },
     },
   },
   plugins: [],

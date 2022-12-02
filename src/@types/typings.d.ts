@@ -8,3 +8,9 @@ interface Coffee {
   tags: string[]
   image: string
 }
+
+interface InfoInterface {
+  text: React.ReactNode | string
+  color: string
+  Icon: React.ReactElement
+}

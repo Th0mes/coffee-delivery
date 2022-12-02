@@ -1,25 +1,11 @@
-import { Layout, Tag, Card } from '../components'
+import { Tag, Card, Info } from '../components'
 
 import { ShoppingCartIcon } from '@heroicons/react/24/solid'
 
 import { Coffee } from '../assets'
-import { useState } from 'react'
 import { useCoffeeStore } from '../hooks/useCoffeeStore'
 
-interface ItemInterface {
-  text: string
-  color: string
-  Icon: React.ReactElement
-}
-
-const Item = ({ Icon, color, text }: ItemInterface) => (
-  <div className="flex gap-4">
-    <div className={`${color} rounded-full p-2 text-white`}>{Icon}</div>
-    <p>{text}</p>
-  </div>
-)
-
-const ItemsData: ItemInterface[][] = [
+const InfosData: InfoInterface[][] = [
   [
     {
       Icon: <ShoppingCartIcon className="h-4 w-4" />,
@@ -82,7 +68,7 @@ export const Home = () => {
   )
 
   return (
-    <Layout>
+    <>
       <section className="grid grid-cols-5 items-center py-12">
         <div className="col-span-3 space-y-16">
           <div className="space-y-8">
@@ -95,10 +81,10 @@ export const Home = () => {
             </p>
           </div>
           <div className="grid grid-cols-2">
-            {ItemsData.map((group, groupId) => (
+            {InfosData.map((group, groupId) => (
               <div key={groupId} className="flex flex-col gap-4">
                 {group.map(({ Icon, color, text }, itemId) => (
-                  <Item key={itemId} Icon={Icon} color={color} text={text} />
+                  <Info key={itemId} Icon={Icon} color={color} text={text} />
                 ))}
               </div>
             ))}
@@ -171,6 +157,6 @@ export const Home = () => {
           )}
         </div>
       </section>
-    </Layout>
+    </>
   )
 }
