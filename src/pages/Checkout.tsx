@@ -10,7 +10,11 @@ import {
   MapPinIcon,
 } from '@heroicons/react/24/outline'
 import { patterns } from '../utils/patterns'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import axios from 'axios'
+import { removeMask } from '../utils/removeMask'
+import { z, zodResolver, CheckoutFormSchema } from '../schemas'
 
 interface PaymentMethodsProps {
   id: string
@@ -60,12 +64,76 @@ const CheckoutCard = ({
   </div>
 )
 
+interface ZipCode {
+  cep: string
+  state: string
+  city: string
+  neighborhood: string
+  street: string
+  service: string
+  location: Record<string, any>
+}
+
+type CheckoutForm = z.infer<typeof CheckoutFormSchema>
+
 export const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>('')
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm<CheckoutForm>({
+    // mask validator
+    // resolver: zodResolver(CheckoutFormSchema),
+  })
+
+  const [formData, setFormData] = useState<CheckoutForm>({} as CheckoutForm)
+
+  const navigate = useNavigate()
+
+  const onSubmit = handleSubmit((data) => {
+    console.log('oi', data)
+
+    data.zipCode = removeMask({
+      value: data.zipCode,
+      pattern: patterns.CEP,
+    })
+
+    data = {
+      ...data,
+      paymentMethod,
+    }
+
+    console.log(data)
+
+    setFormData(data)
+
+    navigate('/success')
+  })
+
+  const handleCep = async () => {
+    let zipCode = getValues('zipCode')
+
+    zipCode = removeMask({
+      value: zipCode,
+      pattern: patterns.CEP,
+    })
+
+    const { data: zipCodeData } = await axios.get<ZipCode>(
+      `https://brasilapi.com.br/api/cep/v2/${zipCode}`
+    )
+
+    setValue('street', zipCodeData.street)
+    setValue('neighborhood', zipCodeData.neighborhood)
+    setValue('city', zipCodeData.city)
+    setValue('state', zipCodeData.state)
+  }
 
   return (
     <div className="grid grid-cols-3 gap-8">
-      <section className="col-span-2 space-y-4">
+      <form className="col-span-2 space-y-4" id="checkout" onSubmit={onSubmit}>
         <h1 className="text-lg font-extrabold">Complete seu pedido</h1>
         <div className="space-y-4">
           <CheckoutCard
@@ -75,19 +143,62 @@ export const Checkout = () => {
             iconColor="text-yellow-dark"
             className="grid grid-cols-3 grid-rows-4 gap-4 overflow-hidden"
           >
-            <Input placeholder="CEP" mask={patterns.CEP} />
-            <Input placeholder="Rua" className="col-span-3 row-start-2" />
-            <Input placeholder="Número" className="row-start-3" />
             <Input
+              {...register('zipCode', {
+                required: true,
+              })}
+              placeholder="CEP"
+              mask={patterns.CEP}
+              onBlur={handleCep}
+              error={Boolean(errors.zipCode)}
+            />
+            <Input
+              {...register('street', {
+                required: true,
+              })}
+              placeholder="Rua"
+              className="col-span-3 row-start-2"
+              error={Boolean(errors.street)}
+            />
+            <Input
+              {...register('number', {
+                required: true,
+                valueAsNumber: true,
+              })}
+              placeholder="Número"
+              className="row-start-3"
+            />
+            <Input
+              {...register('complement')}
               placeholder="Complemento"
               optional
               className="col-span-2 row-start-3"
             />
-            <Input placeholder="Bairro" className="row-start-4" />
+            <Input
+              {...register('neighborhood', {
+                required: true,
+              })}
+              placeholder="Bairro"
+              className="row-start-4"
+            />
             <div className="col-span-2 row-start-4 grid grid-cols-6 gap-4">
-              <Input placeholder="Cidade" className="col-span-4" />
-              <Input placeholder="UF" className="col-span-2" maxLength={2} />
+              <Input
+                {...register('city', {
+                  required: true,
+                })}
+                placeholder="Cidade"
+                className="col-span-4"
+              />
+              <Input
+                {...register('state', {
+                  required: true,
+                })}
+                placeholder="UF"
+                className="col-span-2"
+                uppercase
+              />
             </div>
+            {formData.city}
           </CheckoutCard>
           <CheckoutCard
             title="Pagamento"
@@ -98,8 +209,9 @@ export const Checkout = () => {
             className="flex items-center justify-between space-x-8"
           >
             {PaymentMethods.map(({ id, title, Icon }) => (
-              <div
+              <button
                 key={id}
+                type="button"
                 className={`flex w-full cursor-pointer items-center rounded-lg p-4 uppercase transition-transform ${
                   paymentMethod === id
                     ? 'scale-105 border border-purple bg-purple-light'
@@ -108,16 +220,16 @@ export const Checkout = () => {
                 onClick={() => setPaymentMethod(id)}
               >
                 <Icon className="mr-4 h-6 w-6 text-purple" /> {title}
-              </div>
+              </button>
             ))}
           </CheckoutCard>
         </div>
-      </section>
+      </form>
       <section className="space-y-4">
         <h1 className="text-lg font-extrabold">Cafés selecionados</h1>
         <div className="rounded-box space-y-6 bg-slate-100 p-8">
-          {Array.from(Array(3)).map(() => (
-            <>
+          {Array.from(Array(3)).map((item, id) => (
+            <div key={id} className="space-y-6">
               <CartItem
                 title={'Expresso Tradicional'}
                 image={''}
@@ -125,7 +237,7 @@ export const Checkout = () => {
                 quantity={1}
               />
               <div className="h-0.5 w-full gap-4 rounded bg-gray-200" />
-            </>
+            </div>
           ))}
           <div>
             {[
@@ -149,14 +261,13 @@ export const Checkout = () => {
               </div>
             ))}
           </div>
-          <Link to="/success">
-            <button
-              type="button"
-              className="w-full rounded bg-yellow py-3 text-center uppercase text-white"
-            >
-              Confirmar pedido
-            </button>
-          </Link>
+          <button
+            form="checkout"
+            type="submit"
+            className="w-full rounded bg-yellow py-3 text-center uppercase text-white"
+          >
+            Confirmar pedido
+          </button>
         </div>
       </section>
     </div>

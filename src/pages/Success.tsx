@@ -54,8 +54,8 @@ export const Success = () => {
       <div className="grid grid-cols-2 items-center">
         <div className="rounded-box relative h-full w-full bg-gradient-to-br from-yellow-dark to-purple-dark p-0.5">
           <div className="rounded-box flex h-full w-full flex-col items-start justify-center space-y-6 bg-white p-10">
-            {InfosData.map(({ text, color, Icon }) => (
-              <Info text={text} color={color} Icon={Icon} />
+            {InfosData.map(({ text, color, Icon }, id) => (
+              <Info key={id} text={text} color={color} Icon={Icon} />
             ))}
           </div>
         </div>
